@@ -43,7 +43,44 @@ git fetch only downloads the latest changes from the remote repository and updat
 On the other hand, git pull not only fetches the changes but also automatically merges them into the current branch.
 So, git fetch is safer because it allows us to review changes before merging, while git pull directly updates the working code.
 
-## 4. 
+## 4.  do you know the connection between that? Like how the secret is come flowing through the secret manager to your pipeline? How is that connection or how to setup this
+# ✅ What you understood (partially correct)
+
+You said:
+
+> store secret → create IAM role → give permission → create access key → store in GitHub
+
+✔️ This is **a working approach**, BUT
+❗ it’s **NOT the best practice** (and interviewers expect you to know that)
+
+---
+# ❌ Problem in your approach
+
+👉 You are doing this:
+
+* Creating **Access Key + Secret Key**
+* Storing them in **GitHub secrets**
+
+⚠️ Issue:
+
+* Long-lived credentials ❌
+* Security risk if leaked ❌
+* Manual rotation needed ❌
+
+---
+| Tool           | OIDC Support | Best Practice |
+| -------------- | ------------ | ------------- |
+| GitHub Actions | ✅ Native     | Use OIDC      |
+| GitLab CI      | ✅ Supported  | Use OIDC      |
+| Jenkins        | ❌ Not native | Use IAM Role  |
+
+
+
+
+
+
+
+
 
 
 
