@@ -103,6 +103,44 @@ A Quality Gate is a set of conditions like minimum code coverage, no critical bu
 ## 7 ❓ “What is Code Smell?”
 Code smell refers to maintainability issues in the code, like complex methods, duplicate code, or poor naming conventions.
 
+## 8. “What is the difference between a Vulnerability and a Threat?”
+Yes, vulnerability and threat are related but different concepts in security.
+
+A vulnerability is a weakness or flaw in the system, application, or configuration that could be exploited. For example, hardcoded credentials, outdated libraries, or open ports.
+
+A threat is a potential risk or actor that can exploit that vulnerability to cause harm. For example, a hacker, malware, or unauthorized access attempt.
+
+So, in simple terms:
+- Vulnerability = weakness
+- Threat = something that can exploit that weakness
+
+For example, if an application has a SQL injection flaw, that is a vulnerability. A hacker trying to exploit that flaw is the threat.
+
+## 🔥 Real DevOps Example
+Hardcoded AWS keys → Vulnerability
+Someone using them to access your infra → Threat
+
+## 9. “If a pipeline takes 30 minutes, how will you reduce the time?”
+
+Yes, if a pipeline is taking around 30 minutes, I would first analyze which stages are consuming the most time and then optimize accordingly.
+
+One key approach is parallelization. Independent stages like testing, linting, and security scans can be run in parallel instead of sequentially.
+
+Second, I would implement caching. For example, caching dependencies, Docker layers, or build artifacts so that repeated builds don’t download or rebuild everything again.
+
+Third, I would optimize the build process. This includes using smaller base images, multi-stage Docker builds, and avoiding unnecessary steps.
+
+Fourth, I would reduce redundant steps by triggering pipelines only when relevant changes occur, such as running Terraform pipelines only when infrastructure code changes.
+
+We can also use incremental builds or reuse previously built artifacts wherever possible.
+
+Additionally, I would ensure efficient infrastructure by using faster runners or scaling runners dynamically.
+
+Overall, by combining parallel execution, caching, and optimizing build steps, we can significantly reduce pipeline execution time.
+
+
+
+
 
 
 
