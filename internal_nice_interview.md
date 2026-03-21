@@ -74,6 +74,35 @@ You said:
 | GitLab CI      | ✅ Supported  | Use OIDC      |
 | Jenkins        | ❌ Not native | Use IAM Role  |
 
+## 5. “What kind of checks does SonarQube perform?”
+Yes, SonarQube performs static code analysis and checks multiple aspects of code quality.
+
+It mainly focuses on:
+
+- Code smells: These are maintainability issues like duplicate code, unused variables, or complex logic.
+
+- Bugs: It identifies potential logical errors that may cause incorrect behavior in the application.
+
+- Security vulnerabilities: It detects common security issues like hardcoded credentials, SQL injection risks, or insecure coding patterns.
+
+- Code coverage: It integrates with testing tools to show how much of the code is covered by unit tests.
+
+- Duplications: It checks for duplicate code blocks which impact maintainability.
+
+- Maintainability, reliability, and security ratings: It gives overall ratings based on the quality of the code.
+
+We usually define quality gates, and if the code does not meet the threshold, the pipeline fails and prevents merging or deployment.
+
+🧠 Simple Way to Remember
+
+👉
+Bugs + Vulnerabilities + Code Smells + Coverage + Duplication
+
+## 6 ❓ “What is Quality Gate?”
+A Quality Gate is a set of conditions like minimum code coverage, no critical bugs, or no high-severity vulnerabilities. If the code fails these conditions, the pipeline is blocked.
+## 7 ❓ “What is Code Smell?”
+Code smell refers to maintainability issues in the code, like complex methods, duplicate code, or poor naming conventions.
+
 
 
 
