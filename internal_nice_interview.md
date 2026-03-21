@@ -138,6 +138,35 @@ Additionally, I would ensure efficient infrastructure by using faster runners or
 
 Overall, by combining parallel execution, caching, and optimizing build steps, we can significantly reduce pipeline execution time.
 
+### 10. So you mentioned multistage build here. So do you know why it is used in which scenarios?
+
+Yes, multi-stage builds in Docker are used to optimize the final image size and improve security.
+
+In a multi-stage build, we use multiple FROM statements. The first stage is used for building the application, where we include all build tools and dependencies. Then, in the final stage, we copy only the required artifacts from the build stage and exclude unnecessary files like compilers or development dependencies.
+This helps in reducing the final image size and attack surface.
+
+We mainly use multi-stage builds in scenarios where the application needs compilation or build steps, such as Java, Node.js, or Go applications.
+For example, in a Java application, we use Maven to build the JAR file in the first stage, and then copy only the JAR into a lightweight runtime image in the final stage.
+This improves performance, reduces image size, and makes deployments faster.
+
+# Build stage
+FROM node:18 AS build
+
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+RUN npm run build
+
+# Runtime stage
+FROM node:18-alpine
+
+WORKDIR /app
+COPY --from=build /app/dist ./dist
+
+CMD ["node", "dist/index.js"]
+
 
 
 
