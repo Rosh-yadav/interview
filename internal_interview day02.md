@@ -42,6 +42,46 @@ After that, we create an ExternalSecret resource where we specify which secret t
 The operator watches this resource, fetches the secret from AWS, and automatically creates a Kubernetes Secret.
 Finally, we use that secret in our deployment as environment variables or volumes.
 
+## 9. “Once we create a Secret, how do we load it into a Pod?”
+
+Yes, once a Kubernetes Secret is created, we can load it into a pod in two main ways.
+First, as environment variables, where we reference the secret using secretKeyRef in the pod specification.
+Second, as a volume, where the secret is mounted as files inside the container.
+These are the two common methods used to consume secrets in Kubernetes.
+
+## 10. How do you  designing a 3-tier web application on AWS with high availability and resiliency?
+For designing a 3-tier web application on AWS with high availability and resiliency, I would structure it into three layers: Web, Application, and Database.
+
+First, I would create a VPC spanning multiple Availability Zones for high availability.
+In the Web Tier, I would use an Application Load Balancer placed in public subnets to handle incoming traffic. This ensures traffic is distributed across multiple instances.
+In the Application Tier, I would deploy EC2 instances or containers in private subnets behind the load balancer. Auto Scaling would be enabled to handle traffic spikes and ensure resiliency.
+In the Database Tier, I would use Amazon RDS deployed in private subnets with Multi-AZ enabled for high availability and automatic failover.
+
+For security:
+- Use Security Groups to restrict access between layers
+- Use NACLs for additional subnet-level control
+- Store secrets in AWS Secrets Manager
+- Follow least privilege IAM roles
+
+For networking:
+- Use NAT Gateway or VPC endpoints for outbound access
+- Avoid exposing private resources to the internet
+
+For observability:
+- Use CloudWatch for logs, metrics, and alarms
+- Enable monitoring and alerting for failures
+
+For disaster recovery:
+- Use Multi-AZ deployment
+- Enable automated backups and snapshots for RDS
+- Optionally replicate to another region for DR
+
+For cost optimization:
+- Use Auto Scaling to adjust capacity
+- Use reserved instances or savings plans
+- Shut down unused resources in non-production environments
+
+
 
 
 
