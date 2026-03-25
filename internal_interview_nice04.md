@@ -288,3 +288,192 @@ AWS Scheduled Scaling:
 > For scalability, we used dynamic Jenkins agents with Kubernetes, where agents are provisioned as pods on demand and terminated after execution. This helped in better resource utilization and avoided persistent storage issues."
 
 ---
+
+### 2. How to set up dynamic scalling in jenkin 
+---
+
+## 🎯 **First Say This (High-level)**
+
+> "To set up dynamic scaling of Jenkins agents from scratch, I would integrate Jenkins with Kubernetes, typically on EKS. Using the Kubernetes plugin, Jenkins can provision agents as pods dynamically based on workload, and terminate them after job completion."
+
+---
+
+# 🔧 **Step-by-Step Implementation**
+
+---
+
+## 🔹 1. Set Up Kubernetes Cluster
+
+* Create cluster using:
+
+  * Terraform / eksctl
+
+Example:
+
+```bash
+eksctl create cluster --name my-eks --region ap-south-1
+```
+
+---
+
+## 🔹 2. Install Jenkins
+
+You can install Jenkins:
+
+* On EC2 OR
+* Inside Kubernetes (better)
+
+👉 Recommended:
+
+* Install via Helm
+
+---
+
+## 🔹 3. Install Jenkins Kubernetes Plugin
+
+In Jenkins UI:
+
+* Manage Jenkins → Plugins
+* Install:
+
+  * **Kubernetes Plugin**
+
+---
+
+## 🔹 4. Configure Kubernetes Cloud in Jenkins
+
+Go to:
+
+* Manage Jenkins → **Clouds → Add Kubernetes**
+
+Fill:
+
+* Kubernetes URL (API server)
+* Credentials (Service Account or kubeconfig)
+* Namespace (e.g., `jenkins`)
+
+---
+
+## 🔹 5. Create Service Account & Permissions (VERY IMPORTANT 🔥)
+
+Jenkins needs permission to create pods.
+
+### Example YAML:
+
+```yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: jenkins
+  namespace: jenkins
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: jenkins
+  name: jenkins-role
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["create","delete","get","list"]
+```
+
+---
+
+## 🔹 6. Define Pod Template in Jenkins
+
+Inside Kubernetes Cloud config:
+
+* Add Pod Template:
+
+  * Label: `jenkins-agent`
+  * Container image: `jenkins/inbound-agent`
+
+---
+
+## 🔹 7. Use Dynamic Agent in Pipeline
+
+```groovy
+pipeline {
+  agent {
+    kubernetes {
+      label 'jenkins-agent'
+    }
+  }
+  stages {
+    stage('Build') {
+      steps {
+        sh 'echo Hello from dynamic agent'
+      }
+    }
+  }
+}
+```
+
+---
+
+## 🔄 **What Happens Internally (VERY IMPORTANT TO EXPLAIN)**
+
+1. Job triggered
+2. Jenkins sees `agent kubernetes`
+3. It creates a pod in EKS
+4. Pod runs the job
+5. After completion → pod is deleted
+
+---
+
+💥 **Say this line:**
+
+> "Agents are ephemeral and created on demand, which eliminates idle resources and reduces issues like disk accumulation."
+
+---
+
+# ⚙️ **How Scaling Actually Works**
+
+👉 No manual scaling needed ❌
+
+Scaling is based on:
+
+* Number of jobs in queue
+
+Example:
+
+* 1 job → 1 pod
+* 10 jobs → 10 pods
+
+---
+
+# 🔒 **Controls You Can Configure (Advanced Answer 🔥)**
+
+You can limit scaling:
+
+* Max pods
+* CPU/memory per pod
+* Namespace quotas
+
+---
+
+# 🆚 Alternative: EC2-Based Dynamic Scaling
+
+If they push deeper:
+
+### 🔹 Steps:
+
+1. Create AMI with Jenkins agent
+2. Create Launch Template
+3. Configure Auto Scaling Group
+4. Integrate with Jenkins
+
+---
+
+💥 Say:
+
+> "Compared to EC2-based scaling, Kubernetes-based dynamic agents are more efficient because they are lightweight and faster to provision."
+
+---
+
+
+
+---
+
+
