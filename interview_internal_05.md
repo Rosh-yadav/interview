@@ -85,5 +85,36 @@ It automatically adds or removes worker nodes based on demand.
 ## 6. 6. What is the difference between CloudWatch and CloudTrail?
 "CloudWatch is used for monitoring, logging, and alerting of AWS resources, while CloudTrail is used for auditing and tracking API activity in AWS."
 
-## 7. 
+## 7. How we will integrate the kubernetes with aws secret manager ?
+
+Yes, we use AWS Secrets Manager as the source of truth.
+We install External Secrets Operator in Kubernetes, which acts as a bridge between AWS and the cluster.
+We configure a SecretStore to connect to AWS, and then define an ExternalSecret where we specify which secret to fetch.
+The operator automatically retrieves the secret from AWS and creates a Kubernetes Secret.
+Then we use that Kubernetes Secret in our deployment as environment variables or mounted volumes.
+This way, we don’t manually manage secrets in Kubernetes and keep everything secure and centralized.
+
+We store secrets in AWS Secrets Manager as the source of truth.
+In Kubernetes, we install External Secrets Operator and configure a SecretStore to connect AWS.
+Then we create an ExternalSecret where we define which secret to fetch.
+The operator automatically retrieves the secret and creates a Kubernetes Secret.
+Finally, we use that Kubernetes Secret in our deployment as environment variables or volumes.
+This way, secrets are securely managed in AWS and dynamically synced to Kubernetes.
+
+1. Install External Secrets Operator
+
+2. Create SecretStore
+   → tells HOW to connect AWS
+
+3. Create ExternalSecret
+   → tells WHAT secret to fetch
+
+4. Operator reads ExternalSecret
+
+5. Operator calls AWS Secrets Manager
+
+6. Operator creates Kubernetes Secret
+
+7. Pod uses it
+
 
