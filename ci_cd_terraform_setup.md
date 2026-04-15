@@ -1,5 +1,200 @@
 ---
 
+# 🧱 1. Connect Terraform with AWS
+
+### ✅ Step 1: Create IAM User in Amazon Web Services
+
+* Go to IAM → Create User
+* Enable **Programmatic Access**
+
+### Permissions:
+
+* For practice: `AdministratorAccess`
+* In real projects: **least privilege policy**
+
+---
+
+### ✅ Step 2: Get Credentials
+
+You’ll get:
+
+* Access Key
+* Secret Key
+
+---
+
+### ✅ Step 3: Configure in Terraform
+
+Option 1 (local setup):
+
+```bash
+aws configure
+```
+
+Option 2 (in code – not recommended for real projects):
+
+```hcl
+provider "aws" {
+  region     = "ap-south-1"
+  access_key = "YOUR_KEY"
+  secret_key = "YOUR_SECRET"
+}
+```
+
+👉 Best practice: use **environment variables**
+
+```bash
+export AWS_ACCESS_KEY_ID=xxx
+export AWS_SECRET_ACCESS_KEY=xxx
+```
+
+---
+
+# 🔄 2. Connect GitHub/GitLab → Jenkins
+
+### Tools:
+
+* Jenkins
+* GitHub or GitLab
+
+---
+
+## ✅ Step 1: Setup Jenkins
+
+* Install Jenkins on EC2
+* Install plugins:
+
+  * Git
+  * Pipeline
+  * Credentials
+
+---
+
+## ✅ Step 2: Connect Git Repo to Jenkins
+
+### In Jenkins:
+
+* Create Pipeline Job
+* Add Git repo URL
+
+### Authentication:
+
+* Use:
+
+  * GitHub PAT (Personal Access Token)
+  * OR SSH key
+
+Store in Jenkins **Credentials Manager**
+
+---
+
+## ✅ Step 3: Setup Webhook (Trigger 🔥)
+
+In GitHub/GitLab:
+
+* Add webhook:
+
+```
+http://<jenkins-url>/github-webhook/
+```
+
+👉 Now:
+**Code push → Jenkins pipeline auto trigger**
+
+---
+
+# 🔐 3. How Jenkins Connects to AWS
+
+This is VERY important 🔥
+
+---
+
+## ✅ Option 1 (Basic – Interview Safe)
+
+* Store AWS keys in Jenkins Credentials:
+
+  * Access Key
+  * Secret Key
+
+* Use in pipeline:
+
+```groovy
+withCredentials([aws(credentialsId: 'aws-creds')]) {
+    sh 'terraform apply'
+}
+```
+
+---
+
+## ✅ Option 2 (Best Practice – Real World)
+
+👉 Use **IAM Role (No keys)**
+
+* Attach role to EC2 (where Jenkins runs)
+* Jenkins automatically gets permissions
+
+👉 More secure (no hardcoded keys)
+
+---
+
+# ☁️ 4. Azure Setup (Similar Concept)
+
+For Microsoft Azure:
+
+### Create Service Principal:
+
+```bash
+az ad sp create-for-rbac
+```
+
+You’ll get:
+
+* client_id
+* client_secret
+* tenant_id
+
+Use in Terraform:
+
+```bash
+export ARM_CLIENT_ID=xxx
+export ARM_CLIENT_SECRET=xxx
+export ARM_TENANT_ID=xxx
+export ARM_SUBSCRIPTION_ID=xxx
+```
+
+---
+
+# 🚀 5. How Deployment Actually Happens (Full Flow)
+
+👉 This is your **INTERVIEW GOLD ANSWER**
+
+---
+
+### Step-by-step Flow:
+
+1. Developer pushes code → GitHub
+
+2. Webhook triggers Jenkins
+
+3. Jenkins pipeline starts
+
+4. Jenkins:
+
+   * Pulls code
+   * Runs Terraform:
+
+     * `terraform init`
+     * `terraform plan`
+     * `terraform apply`
+
+5. Terraform uses:
+
+   * AWS IAM / Azure Service Principal
+   * Creates or updates infrastructure
+---
+
+---
+
 # 🚀 1. Overall Flow (Understand First 🔥)
 
 👉
